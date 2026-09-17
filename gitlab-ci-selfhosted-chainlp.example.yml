@@ -70,9 +70,12 @@ stages:
 before_script:
   - which git || (apt-get update && apt-get install -y git)
   # TODO: replace <YOUR_BRIDGE_REPO_URL> with wherever you're hosting this
-  # bridge's own repo (a fork, your own copy, or the published one once
-  # you push/publish it). Once it's on npm, this whole before_script
-  # collapses to: npx chaintest-katalon-bridge install "$CI_PROJECT_DIR"
+  # bridge's own repo - the real one, if you're not forking it, is
+  # https://github.com/montbaga/chaintest-katalon-bridge. This bridge is
+  # now published to npm too, so this whole before_script could collapse
+  # to: npx chaintest-katalon-bridge install "$CI_PROJECT_DIR" - this
+  # file still uses clone+install.sh instead, since that's the form
+  # actually verified end to end on a real pipeline (see the note above).
   - git clone --depth 1 <YOUR_BRIDGE_REPO_URL> /tmp/chaintest-bridge
   - bash /tmp/chaintest-bridge/Linux/install.sh "$CI_PROJECT_DIR"
 

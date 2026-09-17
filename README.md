@@ -1,5 +1,10 @@
 # ChainTest-Katalon Bridge
 
+[![npm version](https://img.shields.io/npm/v/chaintest-katalon-bridge.svg)](https://www.npmjs.com/package/chaintest-katalon-bridge)
+[![License: Apache-2.0](https://img.shields.io/npm/l/chaintest-katalon-bridge.svg)](LICENSE.md)
+[![Last commit](https://img.shields.io/github/last-commit/montbaga/chaintest-katalon-bridge.svg)](https://github.com/montbaga/chaintest-katalon-bridge/commits/main)
+[![Sponsor](https://img.shields.io/badge/sponsor-%E2%9D%A4-red)](https://github.com/sponsors/montbaga)
+
 Turn any Katalon Studio project into a ChainTest-reporting project by
 double-clicking one file - no plugin installation from the Katalon Store, no
 manual Test Listener authoring, no `CustomKeywords` calls pasted into your
@@ -7,6 +12,65 @@ test cases, no changes to existing Test Cases or Test Suites.
 
 See [`ARCHITECTURE.md`](ARCHITECTURE.md) for how this is actually built
 under the hood.
+
+## See It in Action
+
+**1. Run your test suite or collection like you always do**
+
+![Katalon Studio Test Suite run, passed](demo/images/run_test_suite.png)
+
+**2. The report is generated automatically, right inside Katalon Studio**
+
+![ChainTest report folder generated in Katalon Studio](demo/images/chaintest_report_generated.png)
+
+**3. Open it and get the full picture - steps, timing, failure tagging, everything**
+
+![ChainTest static HTML report opened in a browser](demo/images/chaintest_report_html.jpg)
+
+Want build history, pass-rate trends and a live dashboard across runs
+too? That's ChainLP - entirely optional, off by default, and covered in
+full in [Real-time analytics and history (ChainLP)](#real-time-analytics-and-history-chainlp)
+below.
+
+![ChainLP's Metrics tab - build history, duration trend and test growth across runs](demo/images/chainlp_dashboard.jpg)
+
+## Verified in CI
+
+The same reporting runs unmodified in CI. Here it is on a real GitLab
+pipeline, using a self-hosted runner on the same machine as ChainLP, so
+one job produces both the static report and a live ChainLP build. Full
+example in
+[`gitlab-ci-selfhosted-chainlp.example.yml`](gitlab-ci-selfhosted-chainlp.example.yml).
+
+<table>
+<tr><th>Runner registered</th><th>CI job running Katalon</th><th>Build pushed into ChainLP</th></tr>
+<tr>
+<td><img src="demo/images/ci_gitlab_runner.png" width="280"></td>
+<td><img src="demo/images/ci_gitlab_job_log.png" width="280"></td>
+<td><img src="demo/images/ci_chainlp_build.jpg" width="280"></td>
+</tr>
+</table>
+
+## Sponsors
+
+<!-- Company logos go here as Priority Partner / Company sponsors join -->
+
+If your team relies on this in CI, consider
+[sponsoring the project](https://github.com/sponsors/montbaga) to support
+ongoing maintenance:
+
+| Tier | Price | Gets you |
+|---|---|---|
+| Coffee | $5/mo | Your name added to the Backers list below |
+| Backer | $15/mo | Everything above, plus priority attention on your issues |
+| Company | $100/mo | Your company's logo and site link here, near the top of the README |
+| Priority Partner | $199/mo | Everything above, plus direct email help wiring the bridge into your CI setup |
+
+## Backers
+
+<!-- Names go here as backers join -->
+
+Thanks to everyone supporting this project.
 
 ## Why this exists
 
@@ -313,11 +377,15 @@ if instead your runner and ChainLP need to share one machine (see
 "Pushing CI results into ChainLP" below for which applies to you) - a
 GitHub Actions example is planned next. Pick the one matching your
 platform and goal, copy it in under the filename your CI expects, and
-fill in its TODOs (your Test Suite or Test Suite Collection
-path, and - **important** - the bridge's own repo URL: this bridge isn't
-published to npm yet, so all examples install it by cloning its repo
-directly rather than via `npx`; each file's own comments explain exactly
-what to change once it is published).
+fill in its TODOs (your Test Suite or Test Suite Collection path, and the
+bridge's own repo URL). This bridge is published to npm now, but every
+example here still installs it by cloning
+[the repo](https://github.com/montbaga/chaintest-katalon-bridge) directly
+rather than via `npx` - that clone+install path is the one actually
+verified end to end on a real pipeline, since it doesn't depend on
+Node.js being present in whichever CI image you're using. Each file's own
+comments show the shorter `npx chaintest-katalon-bridge install ...` line
+to switch to once you've confirmed Node is available on your own runner.
 
 ### Azure Pipelines
 

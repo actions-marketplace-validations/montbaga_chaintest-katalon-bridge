@@ -7,11 +7,13 @@
 # version for you - install it from the Azure DevOps Marketplace first if
 # your organization doesn't already have it.
 #
-# This bridge isn't published to npm yet, so this installs it by cloning
-# its own repo and running install.ps1 directly - works today regardless
-# of npm publish status. Once it is published, replace the "Install/
-# upgrade the bridge" step below with a single line:
+# This bridge is now published to npm (chaintest-katalon-bridge), so the
+# "Install/upgrade the bridge" step below could become a single line:
 #   npx chaintest-katalon-bridge install "$(Build.SourcesDirectory)"
+# This file still uses the clone+install.ps1 path instead, since that's
+# the one actually verified end to end on a real pipeline - switch to the
+# npx line above yourself once you've confirmed Node.js is available on
+# your agent (Azure's windows-latest hosted image already has it).
 #
 # The bridge itself needs no configuration here: it auto-detects Azure
 # Pipelines from the standard SYSTEM_TEAMFOUNDATIONCOLLECTIONURI /
@@ -44,8 +46,8 @@ steps:
   # commit the result - this step only keeps CI itself current.
   #
   # TODO: replace <bridge-repo-url> with wherever you're hosting this
-  # bridge's own repo (a fork, your own copy, or the published one once
-  # you push/publish it).
+  # bridge's own repo - the real one, if you're not forking it, is
+  # https://github.com/montbaga/chaintest-katalon-bridge.
   - script: |
       git clone --depth 1 <bridge-repo-url> "$(Agent.TempDirectory)\chaintest-bridge"
       powershell -NoProfile -ExecutionPolicy Bypass -File "$(Agent.TempDirectory)\chaintest-bridge\Windows\install.ps1" -ProjectPath "$(Build.SourcesDirectory)"

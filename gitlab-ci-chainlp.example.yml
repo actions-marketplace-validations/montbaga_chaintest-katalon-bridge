@@ -18,12 +18,15 @@
 # which ships Chrome and Firefox but not Edge - use -browserType="Chrome"
 # here rather than "Edge Chromium".
 #
-# This bridge isn't published to npm yet, so before_script installs it
-# by cloning its own repo and running install.sh directly - skip this
-# whole before_script if your project already has the bridge's files
-# committed directly (Test Listeners/, Keywords/chaintest/,
-# Include/config/chaintest/) instead. Once npm publishing happens, this
-# collapses to: npx chaintest-katalon-bridge install "$CI_PROJECT_DIR"
+# This bridge is now published to npm (chaintest-katalon-bridge), so
+# before_script could collapse to a single line instead:
+#   npx chaintest-katalon-bridge install "$CI_PROJECT_DIR"
+# (needs Node.js in this image, not confirmed present in
+# katalonstudio/katalon - confirm it yourself before switching). This
+# file still uses clone+install.sh below. Skip this whole before_script
+# instead if your project already has the bridge's files committed
+# directly (Test Listeners/, Keywords/chaintest/,
+# Include/config/chaintest/).
 
 image: katalonstudio/katalon:11.4.0
 
@@ -33,8 +36,10 @@ stages:
 before_script:
   - which git || (apt-get update && apt-get install -y git)
   # TODO: replace <YOUR_BRIDGE_REPO_URL> with wherever you're hosting
-  # this bridge's own repo - skip this whole before_script instead if
-  # your project already has the bridge's files committed directly.
+  # this bridge's own repo - the real one, if you're not forking it, is
+  # https://github.com/montbaga/chaintest-katalon-bridge. Skip this whole
+  # before_script instead if your project already has the bridge's files
+  # committed directly.
   - git clone --depth 1 <YOUR_BRIDGE_REPO_URL> /tmp/chaintest-bridge
   - bash /tmp/chaintest-bridge/Linux/install.sh "$CI_PROJECT_DIR"
 

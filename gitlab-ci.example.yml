@@ -15,11 +15,14 @@
 # automatically, so the generated report's System Info panel links back to
 # this exact pipeline with no setup required.
 #
-# This bridge isn't published to npm yet, so before_script installs it by
-# cloning its own repo and running install.sh directly - works today
-# regardless of npm publish status. Once it is published, replace that
-# clone+install with a single line:
+# This bridge is now published to npm (chaintest-katalon-bridge), so
+# before_script could install it with a single line instead:
 #   npx chaintest-katalon-bridge install "$CI_PROJECT_DIR"
+# That needs Node.js in this image, which isn't confirmed present in
+# katalonstudio/katalon - this file still uses the clone+install.sh path
+# below instead, since that's the one actually verified end to end on a
+# real pipeline. Switch to the npx line above yourself once you've
+# confirmed Node is available in your own runner image.
 #
 # Katalon 11.4.0's OSGi bundles require JavaSE 21 (confirmed on hosted
 # Windows/Linux VM agents, which don't default to it) - this hasn't been
@@ -27,11 +30,6 @@
 # If the Katalon step below hangs or fails without a clear error, check the
 # image's own `java -version` first and install/select a JDK 21 explicitly
 # in before_script if it's older.
-#
-# It also isn't confirmed to include Node.js or git; before_script installs
-# git if missing and fetches a portable Node binary the same way, purely so
-# npx works once this bridge is published - not needed for the clone+
-# install.sh path used today.
 
 image: katalonstudio/katalon:11.4.0
 
@@ -41,8 +39,8 @@ stages:
 before_script:
   - which git || (apt-get update && apt-get install -y git)
   # TODO: replace <bridge-repo-url> with wherever you're hosting this
-  # bridge's own repo (a fork, your own copy, or the published one once
-  # you push/publish it).
+  # bridge's own repo - the real one, if you're not forking it, is
+  # https://github.com/montbaga/chaintest-katalon-bridge.
   - git clone --depth 1 <bridge-repo-url> /tmp/chaintest-bridge
   - bash /tmp/chaintest-bridge/Linux/install.sh "$CI_PROJECT_DIR"
 
