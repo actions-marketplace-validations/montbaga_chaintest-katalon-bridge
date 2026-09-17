@@ -50,6 +50,38 @@ not just your one piece.
 
 **Leave `127.0.0.1` in `chainlp/docker-compose.yml` exactly as it is - don't change it.** It's what stops any other device from reaching ChainLP; since only you use it here, there's nothing to gain by changing it and a real risk (ChainLP has no password of its own) if you did.
 
+<details>
+<summary>Screenshots - Scenario A start to finish</summary>
+
+![up.ps1 starting ChainLP on port 8085](images/scenario-a/up-ps1-start.png)
+*Step 1 - `up.ps1` brings ChainLP up and prints the exact two lines to paste into `chaintest.properties`.*
+
+![Pasting the two ChainLP lines into chaintest.properties inside Katalon Studio](images/scenario-a/chaintest-properties-edit.png)
+*Step 2 - those lines dropped straight into the project's `Include/config/chaintest/chaintest.properties`.*
+
+![Katalon Studio Test Suite run, passed](images/scenario-a/katalon-run-passed.png)
+*Step 3 - running the Test Suite as normal. The bridge's listener does the reporting in the background.*
+
+![The always-on static HTML report, listed in Katalon's file explorer](images/scenario-a/static-report-katalon-explorer.png)
+*Whether or not ChainLP is on, the zero-setup static report still lands in `chaintest-report/<Suite>_<timestamp>/Index.html` every run.*
+
+![The static HTML report open in a browser](images/scenario-a/static-report-local.jpg)
+*That same static report, opened directly - no server, no login, works completely offline.*
+
+![ChainLP's Projects page showing the project just run](images/scenario-a/chainlp-projects.png)
+*Now the ChainLP side: opening `http://localhost:8085/` shows the project the bridge just reported to.*
+
+![ChainLP's Builds page with a duration chart and build history](images/scenario-a/chainlp-builds.png)
+*Drilling into the project - every run so far, with pass/fail history and duration trends.*
+
+![A single ChainLP build broken down by suite, test case, and step](images/scenario-a/chainlp-build-detail.jpg)
+*Drilling into one build - the full step-by-step log, generated automatically from Katalon's own execution.*
+
+![ChainLP's Metrics tab - build history, duration trend, test growth, and failing tests across builds](images/scenario-a/chainlp-metrics.jpg)
+*The Metrics tab - the cross-run history and trend view the static report alone can't give you.*
+
+</details>
+
 [↑ back to scenario picker](#find-your-scenario)
 
 ### Scenario B: add CI, no password needed
@@ -78,6 +110,22 @@ CI variable in step 6.
 
 **Leave `127.0.0.1` in `chainlp/docker-compose.yml` exactly as it is - don't change it.** The runner (step 4) is on this same machine, so nothing outside this machine ever needs to reach ChainLP directly - `127.0.0.1` already allows that, and changing it would only open ChainLP up to other devices on your network for no benefit.
 
+<details>
+<summary>Screenshots - Scenario B's extra CI steps</summary>
+
+Steps 1-3 look exactly like Scenario A's screenshots above (same `up.ps1`, same `chaintest.properties`, same local run) - only the CI-specific steps are new here:
+
+![Registering a self-hosted, Docker-executor GitLab Runner](images/scenario-b/gitlab-self-hosted-runner.png)
+*Step 4 - a self-hosted runner registered on the same machine as ChainLP, so `host.docker.internal` can reach it.*
+
+![GitLab CI job log running the Katalon Test Suite headlessly](images/scenario-b/gitlab-ci-job-log.png)
+*Step 7 - `git push` triggers the pipeline, which runs the same Test Suite headlessly inside the runner's container.*
+
+![ChainLP build pushed by CI, showing a failed step](images/scenario-b/chainlp-build-from-ci.jpg)
+*The resulting build inside ChainLP - pushed by CI, not a local run. This particular one caught a real headless-only failure (`maximizeWindow()` isn't meaningful without a visible window), exactly the kind of thing this extra layer is for.*
+
+</details>
+
 [↑ back to scenario picker](#find-your-scenario)
 
 ### Scenario C: add CI, ChainLP needs a password
@@ -94,6 +142,23 @@ This one does **not** need your own local ChainLP (Scenario A/B's `up.sh`) at al
 | 6 | - | You | `git push` - the pipeline runs, results appear in ChainLP through the write-proxy |
 
 **Leave `127.0.0.1` in `chainlp/write-proxy/docker-compose.yml` exactly as it is - don't change it.** Same reason as Scenario B: the runner (step 1) is on this same machine, so nothing outside this machine needs to reach the write-proxy directly - and this port is even more sensitive than a plain ChainLP's, since reaching it is equivalent to having the real remote password (see "Where this needs to run" further below).
+
+<details>
+<summary>Screenshots - Scenario C's password-relay setup</summary>
+
+![write-proxy setup.ps1 prompting for the real ChainLP URL and credential](images/scenario-c/write-proxy-setup.png)
+*Step 3 - `write-proxy/setup.ps1` asks for the real, password-protected ChainLP's address and login once, then relays for you from then on.*
+
+![.gitlab-ci.yml pointing CHAINTEST_GENERATOR_CHAINLP_HOST_URL at the write-proxy](images/scenario-c/gitlab-ci-yaml-write-proxy.png)
+*Step 5 - the CI job points at the write-proxy (`host.docker.internal:8086`), never at the real ChainLP or its password directly.*
+
+![A browser login prompt for the real, password-protected ChainLP](images/scenario-c/chainlp-login-prompt.png)
+*What a human sees going to the real ChainLP directly - a login prompt (here, behind a Cloudflare tunnel). CI never sees this; it goes through the write-proxy instead.*
+
+![The CI-pushed build visible after signing in](images/scenario-c/chainlp-build-via-tunnel.png)
+*Signed in, the same build CI just pushed through the write-proxy is right there - the relay worked end to end.*
+
+</details>
 
 [↑ back to scenario picker](#find-your-scenario)
 
@@ -113,6 +178,14 @@ nothing in CI settings; someone already did Scenario E for you.
 | 5 | - | You | `git push`, then refresh the URL from step 1 - a new build should appear, pushed by CI using the exact same address you already confirmed working locally |
 
 **You never touch `127.0.0.1`/`docker-compose.yml` in this scenario at all** - that file only exists in the **[bridge repo]**, which you don't have a copy of here. Whether it's `127.0.0.1` or `0.0.0.0` was already decided by your Platform/DevOps team when they did Scenario E.
+
+<details>
+<summary>Screenshot - what you'll actually see</summary>
+
+![Opening the team's ChainLP address in a browser, builds already there](images/scenario-d/chainlp-team-address-build.png)
+*Step 2 - the address your Platform/DevOps team gave you (here, a plain network IP) opened in a browser. Your build is already there - nothing to install, nothing to configure beyond step 1's two properties lines. Notice the browser's "Not secure" badge - expected for a plain HTTP address on a private network, not a sign anything is wrong.*
+
+</details>
 
 [↑ back to scenario picker](#find-your-scenario)
 
@@ -223,6 +296,9 @@ Once step 1b's `0.0.0.0` change is in place, you don't need to go find this
 IP yourself - re-run `./up.sh`/`.\up.ps1` (or `write-proxy/setup.sh`/`.ps1`)
 and it now detects and prints your machine's real network IP automatically,
 right alongside the address, e.g. `ChainLP is up: http://10.20.30.40:8085/`.
+
+![up.ps1 auto-detecting and printing the server's real network IP](images/scenario-e/up-ps1-network-ip.png)
+*Same script as Scenario A's step 1, run again after the `0.0.0.0` change - this time it prints a real network address instead of `localhost`, ready to hand straight to your team.*
 
 | | |
 |---|---|
