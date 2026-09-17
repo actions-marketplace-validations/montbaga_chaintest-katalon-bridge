@@ -15,15 +15,19 @@ under the hood.
 
 ## See It in Action
 
-**1. Run your test suite or collection like you always do**
+**1. Install with one command**
+
+![npx chaintest-katalon-bridge install, run against a real Katalon project](demo/images/npx_install.png)
+
+**2. Run your test suite or collection like you always do**
 
 ![Katalon Studio Test Suite run, passed](demo/images/run_test_suite.png)
 
-**2. The report is generated automatically, right inside Katalon Studio**
+**3. The report is generated automatically, right inside Katalon Studio**
 
 ![ChainTest report folder generated in Katalon Studio](demo/images/chaintest_report_generated.png)
 
-**3. Open it and get the full picture - steps, timing, failure tagging, everything**
+**4. Open it and get the full picture - steps, timing, failure tagging, everything**
 
 ![ChainTest static HTML report opened in a browser](demo/images/chaintest_report_html.jpg)
 
