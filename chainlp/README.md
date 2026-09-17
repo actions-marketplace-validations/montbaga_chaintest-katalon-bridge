@@ -204,6 +204,29 @@ Everyone in Scenario D depends on you doing this once.
 | 6 | See "Remote access" or "Writing to a ChainLP that's behind a login" below | Platform/DevOps team | Only if you want a login for viewers, or you're relaying a different, already-existing ChainLP |
 | 7 | - | Platform/DevOps team | Tell your team the address from step 3 - that's all Scenario D needs from you |
 
+<details open>
+<summary>Screenshots - Scenario E end to end</summary>
+
+![docker-compose.yml with the ports line changed from 127.0.0.1 to 0.0.0.0](images/scenario-e/docker-compose-ip-edit.png)
+*Step 1b - the one required edit: `chainlp-proxy`'s `ports:` line changed from `127.0.0.1:...` to `0.0.0.0:...` in `chainlp/docker-compose.yml`.*
+
+![up.ps1 auto-detecting and printing the server's real network IP](images/scenario-e/up-ps1-network-ip.png)
+*Steps 1 and 3 - re-running `up.ps1` after the `0.0.0.0` change. It detects this machine's real network IP and prints the exact `chaintest.properties` lines to hand to your team, instead of a `localhost` address nobody else could use.*
+
+![Pasting the network address into chaintest.properties](images/scenario-e/chaintest-properties-network-ip.png)
+*What every teammate then does in Scenario D step 1 - the same two lines as Scenario A, just with the network address instead of `localhost`.*
+
+![Katalon Studio Test Suite run, passed](images/scenario-e/katalon-run-passed.png)
+*Scenario D step 2 - running a Test Suite as normal. Nothing about the test itself changes.*
+
+![The always-on static HTML report, generated locally regardless of ChainLP](images/scenario-e/static-report-local.jpg)
+*The static report is still generated locally either way, exactly like Scenario A - ChainLP is additive, never a replacement.*
+
+![The build visible in ChainLP, reached over the network address](images/scenario-e/chainlp-build-network-ip.png)
+*...and the build lands in ChainLP, reachable at the network address instead of `localhost` - proof the `0.0.0.0` change and the address from step 3 work end to end.*
+
+</details>
+
 [↑ back to scenario picker](#find-your-scenario)
 
 #### If every port is taken
