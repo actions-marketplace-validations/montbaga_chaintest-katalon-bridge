@@ -50,7 +50,7 @@ not just your one piece.
 
 **Leave `127.0.0.1` in `chainlp/docker-compose.yml` exactly as it is - don't change it.** It's what stops any other device from reaching ChainLP; since only you use it here, there's nothing to gain by changing it and a real risk (ChainLP has no password of its own) if you did.
 
-<details>
+<details open>
 <summary>Screenshots - Scenario A start to finish</summary>
 
 ![up.ps1 starting ChainLP on port 8085](images/scenario-a/up-ps1-start.png)
@@ -110,7 +110,7 @@ CI variable in step 6.
 
 **Leave `127.0.0.1` in `chainlp/docker-compose.yml` exactly as it is - don't change it.** The runner (step 4) is on this same machine, so nothing outside this machine ever needs to reach ChainLP directly - `127.0.0.1` already allows that, and changing it would only open ChainLP up to other devices on your network for no benefit.
 
-<details>
+<details open>
 <summary>Screenshots - Scenario B's extra CI steps</summary>
 
 Steps 1-3 look exactly like Scenario A's screenshots above (same `up.ps1`, same `chaintest.properties`, same local run) - only the CI-specific steps are new here:
@@ -143,7 +143,7 @@ This one does **not** need your own local ChainLP (Scenario A/B's `up.sh`) at al
 
 **Leave `127.0.0.1` in `chainlp/write-proxy/docker-compose.yml` exactly as it is - don't change it.** Same reason as Scenario B: the runner (step 1) is on this same machine, so nothing outside this machine needs to reach the write-proxy directly - and this port is even more sensitive than a plain ChainLP's, since reaching it is equivalent to having the real remote password (see "Where this needs to run" further below).
 
-<details>
+<details open>
 <summary>Screenshots - Scenario C's password-relay setup</summary>
 
 ![write-proxy setup.ps1 prompting for the real ChainLP URL and credential](images/scenario-c/write-proxy-setup.png)
@@ -179,7 +179,7 @@ nothing in CI settings; someone already did Scenario E for you.
 
 **You never touch `127.0.0.1`/`docker-compose.yml` in this scenario at all** - that file only exists in the **[bridge repo]**, which you don't have a copy of here. Whether it's `127.0.0.1` or `0.0.0.0` was already decided by your Platform/DevOps team when they did Scenario E.
 
-<details>
+<details open>
 <summary>Screenshot - what you'll actually see</summary>
 
 ![Opening the team's ChainLP address in a browser, builds already there](images/scenario-d/chainlp-team-address-build.png)
