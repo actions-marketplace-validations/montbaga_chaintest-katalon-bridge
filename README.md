@@ -11,9 +11,9 @@ manual Test Listener authoring, no `CustomKeywords` calls pasted into your
 test cases, no changes to existing Test Cases or Test Suites.
 
 Every run gets a zero-setup static HTML report automatically. Turn on
-**ChainLP** and every run also lands in a real-time dashboard with build
-history and cross-run trends - something Katalon Studio has never had,
-official or community, until this bridge.
+**[ChainLP](chainlp/README.md)** and every run also lands in a real-time
+dashboard with build history and cross-run trends - something Katalon
+Studio has never had, official or community, until this bridge.
 
 See [`ARCHITECTURE.md`](ARCHITECTURE.md) for how this is actually built
 under the hood.
