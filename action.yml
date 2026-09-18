@@ -1,0 +1,34 @@
+name: 'ChainTest-Katalon Bridge'
+description: 'Zero-touch ChainTest reporting for Katalon Studio - no plugin, no OSGi packaging, no test script changes.'
+author: 'Monty Bagati'
+branding:
+  icon: 'bar-chart-2'
+  color: 'orange'
+
+inputs:
+  project-path:
+    description: 'Path to the Katalon Studio project (the folder containing the .prj file)'
+    required: false
+    default: '.'
+  force:
+    description: 'Also overwrite a customized chaintest.properties/failure-tags.json with the shipped default'
+    required: false
+    default: 'false'
+
+runs:
+  using: 'composite'
+  steps:
+    # Runs bin/cli.js directly from this action's own checkout rather than
+    # `npx chaintest-katalon-bridge`, so this works the same whether it's
+    # referenced as `uses: ./` (this repo's own CI) or
+    # `uses: montbaga/chaintest-katalon-bridge@v1` (a consumer's workflow) -
+    # github.action_path resolves to the right checkout either way, with no
+    # dependency on the package being published to npm.
+    - name: Install/upgrade ChainTest-Katalon Bridge
+      shell: bash
+      run: |
+        if [ "${{ inputs.force }}" = "true" ]; then
+          node "${{ github.action_path }}/bin/cli.js" install "${{ inputs.project-path }}" --force
+        else
+          node "${{ github.action_path }}/bin/cli.js" install "${{ inputs.project-path }}"
+        fi

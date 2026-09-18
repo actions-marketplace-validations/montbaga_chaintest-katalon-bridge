@@ -400,8 +400,11 @@ actually verified end to end on a real pipeline, since it doesn't depend
 on Node.js being present in whichever CI image you're using. Each file's
 own comments show the shorter `npx chaintest-katalon-bridge install ...`
 line to switch to once you've confirmed Node is available on your own
-runner. The GitHub Actions example uses `npx` directly instead, since
-`actions/setup-node` makes Node.js a known quantity there.
+runner. The GitHub Actions example instead uses the published
+[`montbaga/chaintest-katalon-bridge`](https://github.com/marketplace/actions/chaintest-katalon-bridge)
+Action directly - no `npx`, no repo clone, no separate `setup-node` step.
+It runs its own bundled `bin/cli.js` via the Node.js that's already
+preinstalled on every GitHub-hosted runner.
 
 ### Azure Pipelines
 
@@ -447,9 +450,10 @@ Reports show up on the pipeline job's page, in the **Job artifacts** panel.
 
 Unlike the GitLab CI example, this one runs on a `windows-latest` hosted
 runner via `katalon-studio-github-action`, so it's **Edge Chromium**, same
-as the Azure Pipelines example. Since this bridge is already on npm, the
-install step here uses `npx chaintest-katalon-bridge install` directly -
-no repo clone needed.
+as the Azure Pipelines example. The install step uses the published
+[`montbaga/chaintest-katalon-bridge`](https://github.com/marketplace/actions/chaintest-katalon-bridge)
+Action directly, pinned to `@v1` so it picks up fixes automatically
+within that major version.
 
 Reports show up on the workflow run's page, in the **Artifacts** section
 at the bottom of the summary.
