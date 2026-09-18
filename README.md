@@ -10,6 +10,11 @@ double-clicking one file - no plugin installation from the Katalon Store, no
 manual Test Listener authoring, no `CustomKeywords` calls pasted into your
 test cases, no changes to existing Test Cases or Test Suites.
 
+Every run gets a zero-setup static HTML report automatically. Turn on
+**ChainLP** and every run also lands in a real-time dashboard with build
+history and cross-run trends - something Katalon Studio has never had,
+official or community, until this bridge.
+
 See [`ARCHITECTURE.md`](ARCHITECTURE.md) for how this is actually built
 under the hood.
 
@@ -31,12 +36,14 @@ under the hood.
 
 ![ChainTest static HTML report opened in a browser](demo/images/chaintest_report_html.jpg)
 
-Want build history, pass-rate trends and a live dashboard across runs
-too? That's ChainLP - entirely optional, off by default, and covered in
-full in [Real-time analytics and history (ChainLP)](#real-time-analytics-and-history-chainlp)
-below.
+**5. Turn on ChainLP and get build history, pass-rate trends and a live dashboard across runs too**
 
 ![ChainLP's Metrics tab - build history, duration trend and test growth across runs](demo/images/chainlp_dashboard.jpg)
+
+Entirely optional, off by default, and nothing else offers this for
+Katalon Studio today. Full setup in
+[Real-time analytics and history (ChainLP)](#real-time-analytics-and-history-chainlp)
+below.
 
 ## Verified in CI
 
@@ -92,6 +99,7 @@ pre-wired instead.
 | Write your own Test Listener by hand | Ships a pre-wired one - `Test Listeners/ChainTestListener.groovy` |
 | Manually convert Katalon's own execution log into report steps | Auto-converts it into nested ChainTest steps - zero-touch by default |
 | A reporting bug could fail or change the outcome of a real test | Every hook catches its own exceptions and only logs a warning |
+| No real-time dashboard or cross-run history exists for Katalon Studio anywhere | Ships **ChainLP**: an optional, dockerized live dashboard with build history and trend data - see [Real-time analytics and history (ChainLP)](#real-time-analytics-and-history-chainlp) |
 
 ## Requirements
 
