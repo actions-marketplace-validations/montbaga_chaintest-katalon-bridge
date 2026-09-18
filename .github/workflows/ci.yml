@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create a fake Katalon project to install into
+        run: |
+          mkdir -p /tmp/fake-project
+          touch /tmp/fake-project/FakeProject.prj
+
+      - name: Install the bridge from this repo's current code
+        run: node bin/cli.js install /tmp/fake-project
+
+      - name: Verify expected files landed
+        run: |
+          test -f "/tmp/fake-project/Test Listeners/ChainTestListener.groovy"
+          test -f "/tmp/fake-project/Keywords/chaintest/ChainTestReportBridge.groovy"
+          test -f "/tmp/fake-project/Keywords/chaintest/ChainTestConfig.groovy"
+          test -f "/tmp/fake-project/Keywords/chaintest/ChainTestKeywords.groovy"
+          test -f "/tmp/fake-project/Include/config/chaintest/chaintest.properties"
+          test -f "/tmp/fake-project/Include/config/chaintest/failure-tags.json"
+          test -f "/tmp/fake-project/Drivers/chaintest-core-1.0.12.jar"
+          echo "All expected files present."
+
+      - name: Verify uninstall removes exactly what it installed
+        run: |
+          node bin/cli.js uninstall /tmp/fake-project
+          test ! -f "/tmp/fake-project/Test Listeners/ChainTestListener.groovy"
+          test -f "/tmp/fake-project/FakeProject.prj"
+          echo "Uninstall left the project's own file alone and removed the rest."

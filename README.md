@@ -1,6 +1,7 @@
 # ChainTest-Katalon Bridge
 
 [![npm version](https://img.shields.io/npm/v/chaintest-katalon-bridge.svg)](https://www.npmjs.com/package/chaintest-katalon-bridge)
+[![CI](https://img.shields.io/github/actions/workflow/status/montbaga/chaintest-katalon-bridge/ci.yml?branch=main&label=CI)](https://github.com/montbaga/chaintest-katalon-bridge/actions/workflows/ci.yml)
 [![License: Apache-2.0](https://img.shields.io/npm/l/chaintest-katalon-bridge.svg)](LICENSE.md)
 [![Last commit](https://img.shields.io/github/last-commit/montbaga/chaintest-katalon-bridge.svg)](https://github.com/montbaga/chaintest-katalon-bridge/commits/main)
 [![Sponsor](https://img.shields.io/badge/sponsor-%E2%9D%A4-red)](https://github.com/sponsors/montbaga)
@@ -379,25 +380,28 @@ clear which build produced it - nothing to configure for that part on any
 of them.
 
 This repo includes ready-to-copy configs -
-[`azure-pipelines.example.yml`](azure-pipelines.example.yml) and
-[`gitlab-ci.example.yml`](gitlab-ci.example.yml) for the static report
-only; [`gitlab-ci-chainlp.example.yml`](gitlab-ci-chainlp.example.yml)
+[`azure-pipelines.example.yml`](azure-pipelines.example.yml),
+[`gitlab-ci.example.yml`](gitlab-ci.example.yml), and
+[`github-actions.example.yml`](github-actions.example.yml) for the static
+report only; [`gitlab-ci-chainlp.example.yml`](gitlab-ci-chainlp.example.yml)
 if you also want CI to push into a ChainLP your runner can already
 reach directly (a real company address, no self-hosted-same-machine
 trick needed); or [`gitlab-ci-selfhosted-chainlp.example.yml`](gitlab-ci-selfhosted-chainlp.example.yml)
 if instead your runner and ChainLP need to share one machine (see
-"Pushing CI results into ChainLP" below for which applies to you) - a
-GitHub Actions example is planned next. Pick the one matching your
-platform and goal, copy it in under the filename your CI expects, and
-fill in its TODOs (your Test Suite or Test Suite Collection path, and the
-bridge's own repo URL). This bridge is published to npm now, but every
-example here still installs it by cloning
-[the repo](https://github.com/montbaga/chaintest-katalon-bridge) directly
-rather than via `npx` - that clone+install path is the one actually
-verified end to end on a real pipeline, since it doesn't depend on
-Node.js being present in whichever CI image you're using. Each file's own
-comments show the shorter `npx chaintest-katalon-bridge install ...` line
-to switch to once you've confirmed Node is available on your own runner.
+"Pushing CI results into ChainLP" below for which applies to you). Pick
+the one matching your platform and goal, copy it in under the filename
+your CI expects, and fill in its TODOs (your Test Suite or Test Suite
+Collection path).
+
+The Azure Pipelines and GitLab CI examples still install the bridge by
+cloning [the repo](https://github.com/montbaga/chaintest-katalon-bridge)
+directly rather than via `npx` - that clone+install path is the one
+actually verified end to end on a real pipeline, since it doesn't depend
+on Node.js being present in whichever CI image you're using. Each file's
+own comments show the shorter `npx chaintest-katalon-bridge install ...`
+line to switch to once you've confirmed Node is available on your own
+runner. The GitHub Actions example uses `npx` directly instead, since
+`actions/setup-node` makes Node.js a known quantity there.
 
 ### Azure Pipelines
 
@@ -431,6 +435,24 @@ Katalon onto a hosted VM, so it runs on **Chrome, not Edge** - adjust
 `-browserType` and any browser-specific test logic accordingly.
 
 Reports show up on the pipeline job's page, in the **Job artifacts** panel.
+
+### GitHub Actions
+
+1. Copy `github-actions.example.yml` into your repo as
+   `.github/workflows/katalon-ci.yml`.
+2. Under **Settings → Secrets and variables → Actions**, add a repository
+   secret named `KATALON_API_KEY` with your Katalon Runtime Engine API key.
+3. Fill in the TODO (your Test Suite Collection path).
+4. Commit and push - the workflow runs on every push to `main`.
+
+Unlike the GitLab CI example, this one runs on a `windows-latest` hosted
+runner via `katalon-studio-github-action`, so it's **Edge Chromium**, same
+as the Azure Pipelines example. Since this bridge is already on npm, the
+install step here uses `npx chaintest-katalon-bridge install` directly -
+no repo clone needed.
+
+Reports show up on the workflow run's page, in the **Artifacts** section
+at the bottom of the summary.
 
 ### Pushing CI results into ChainLP
 
